@@ -1,12 +1,330 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Setlists expected to be played at Corona Festival 2023</title>
+    <meta name="keywords" content="Corona Capital, Music Festival, 2023, Music">
+    <meta name="author" content="Ruedakax">
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #312c28;
+            font-family: 'Roboto',sans-serif;
+        }
+
+        .container {
+            width: 90%;
+            margin: 50px auto;
+        }
+
+        .heading {
+            text-align: center;
+            font-size: 30px;
+            margin-bottom: 50px;
+            color: #ee8128;
+        }
+
+        .column {
+            display: flex;
+            justify-content: space-around;
+            flex-flow: column;
+            flex-basis: 100%;            
+        }
+
+        /*.box {
+            display: flex;
+            justify-content: space-around;
+            flex-flow: row;
+            flex-basis: 100%;            
+        }*/
+
+        .day-header {
+            text-align: center;
+            padding: 10px 10px;
+            background: linear-gradient(to right, #fca31f, #ee8128);
+            color: #7c0b4d;
+            margin-bottom: 1px;            
+        }
+
+        .card {
+            width: 100%;
+            background: #ee8128;
+            border: 1px solid #ee8128;
+            /*margin-bottom: 50px;*/
+        }
+
+        .card-header {            
+            text-align: center;
+            padding: 10px 10px;
+            background: linear-gradient(to right, #8cee4b, #a4c434);
+            color: #236110;
+            cursor: pointer;
+            margin-bottom: 1px;
+            transition: 0.1s;
+        }
+
+        .card-body {
+            padding: 30px 20px;
+            text-align: center;
+            background: linear-gradient(to right, #141414, #4e4948);
+            color: #ebf7e8;
+            width: 100%;
+        }
+        .card-body p {            
+            font-size: 14px;
+            padding: 5px;
+        }
+        
+        .card-header:hover {
+            transform: scale(1.005);
+            background: linear-gradient(to right, #ac2dac, #be2352);
+            box-shadow: 0px 5px 5px #1a062c;
+            color:#f7cfdb
+        }
+
+        .hide {
+            display:none;
+        }
+
+        /*loading device*/
+        .loader {
+            width: 28px;
+            height: 28px;
+            border: 2px solid #ac2dac;
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        .loader::after,
+        .loader::before {
+            content: '';  
+            box-sizing: border-box;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #ac2dac;
+            width: 3px;
+            height: 3px;
+            transform: translate(150%, 150%);
+            border-radius: 50%;
+        }
+        .loader::before {
+            left: auto;
+            top: auto;
+            right: 0;
+            bottom: 0;
+            transform: translate(-150%, -150%);
+        }
+
+        /*list*/
+        ul {            
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            list-style-type: none;
+        }
+
+        ul li {
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        ul li:not(:last-child) {
+            margin-bottom: 2px;
+        }
+        
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        } 
+
+        /* Responsive media queries */
+
+        @media screen and (max-width: 1000px) {
+            .card {
+                width: 80%;
+            }
+        }
+
+        @media screen and (max-width: 620px) {
+            .container {
+                width: 100%;
+            }
+
+            .heading {
+                padding: 20px;
+                font-size: 30px;
+            }
+
+            .card {
+                width: 80%;
+            }
+        }
+    </style>
 </head>
 <body>
-    HELLOOOOO!
+    <div class="container">
+        <div class="heading">
+          <h2>Setlists expected to be played at Corona Festival 2023</h2>
+        </div>    
+        <div id="app" v-cloak>
+            <band-list/>
+        </div>
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="./js/info.js"></script>
+    <script>
+        let app = Vue.createApp({
+            data: function() {
+                return {
+
+                }
+            },
+            methods: {
+
+            },
+        })
+        app.component('band-list', {
+            template: `
+            <div class="column">
+                <div class="box" v-for="(day, index) in bands">
+                    <div class="card">                    
+                        <div class="day-header">{{index}}</div>
+                    </div>                    
+                    <div class="card">                    
+                            <div class="box2" v-for="band in day">
+                                <band-item :band="{band}"></band-item>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            `,
+            components:['band-item'],
+            data() {
+                return {
+                    bands: days,
+                }
+            },
+            methods:{
+
+            }
+        })
+        app.component('band-item',{
+            template: `
+                <div class="card-header" @click="getBand(band.band)">
+                    <h4>{{ band.band }}</h4>
+                </div>
+                <div class="card-body" :class="{ hide: this.id == '' }">
+                    <p><strong>It sounds like: </strong><em>{{this.tags}}</em></p>
+                    <p v-if="show.date !== undefined">
+                        <strong>Last show was at </strong> <em>{{show.venueName}}, {{show.city}}, {{show.country}} ({{show.date}}).</em>
+                    </p>
+                    <div>
+                        <p>Songs:</p>
+                        <ul v-if="show.songs.length > 0">
+                            <li v-for="song in show.songs">{{song.name}}</li>
+                        </ul>
+                        <span class="loader" v-if="loading"></span>
+                        <span v-if="show.songs.length <= 0 && !loading">Not set lists found</span>
+                    </div>
+                </div>
+            `,
+            components:['set-list'],
+            props:['band'],
+            data: function() {
+                return {
+                    id: '',
+                    tags: '',
+                    loading: false,
+                    show: {
+                        date: undefined,
+                        venueName : undefined,
+                        city: undefined,
+                        country: undefined,
+                        songs: [],
+                    }
+                }
+            },
+            methods:{
+                async getBand(item) {
+                    try {
+                        if(this.id !=''){
+                            this.id = ''
+                            this.tags = ''
+                        }else {
+                            const response = await axios.get(`http://musicbrainz.org/ws/2/artist/?query=${item}&fmt=json&limit=1`)
+                            this.id = response.data.artists[0].id                            
+                            let bandTags = response.data.artists[0].tags !== undefined ? response.data.artists[0].tags : []
+                            this.tags = this.tagsToSlashedString(bandTags)                            
+                        }
+                        
+                    } catch (error) {
+                        console.error(error);
+                        this.id = '';
+                    }
+                },
+                async getLastSetList(){
+                    if (this.id !== '') {
+                        try {
+                            this.loading = true
+                            const response = await axios.get(`https://soundsxpected.000webhostapp.com/getset.php?mbzid=${this.id}`)
+                            let setLists = response.data.setlist !== undefined ? response.data.setlist : []
+                            this.getFirstValidShow(setLists)                            
+                        } catch (error) {
+                            console.error(error);
+                            this.id = '';
+                        } finally {
+                            this.loading = false
+                        }
+                    }
+                },
+                tagsToSlashedString(tagsArray){
+                    let tags = tagsArray.filter(tag => tag.count > 1)
+                            .map(function(item) { return item.name })                         
+                            .join(' / ')
+                    
+                    return tags.length ? tags : 'No idea yet!'                    
+                },
+                getFirstValidShow(shows){
+                    let requestedShow = []
+
+                    for (let i = 0; i < shows.length; i++) {
+                        if (shows[i].sets.set[0] !== undefined && shows[i].sets.set[0].song.length > 5) {
+                            requestedShow = shows[i]
+                            break
+                        }                        
+                    }
+
+                    if (requestedShow.sets !== undefined && requestedShow.sets.set[0] !== undefined) {
+                        this.show.date = requestedShow.eventDate
+                        this.show.venueName = requestedShow.venue.name
+                        this.show.city = requestedShow.venue.city.name
+                        this.show.country = requestedShow.venue.city.country.name
+                        this.show.songs = requestedShow.sets.set[0].song
+                    }
+                }
+            },
+            watch:{
+                id () {
+                    this.getLastSetList()
+                }
+            }
+        })
+        app.mount('#app')
+    </script>
 </body>
 </html>
