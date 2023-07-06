@@ -6,7 +6,7 @@
     <title>Setlists expected to be played at Corona Festival 2023</title>
     <meta name="keywords" content="Corona Capital, Music Festival, 2023, Music">
     <meta name="author" content="Ruedakax">
-    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <style>
         * {
             padding: 0;
@@ -104,6 +104,16 @@
             box-sizing: border-box;
             animation: rotation 1s linear infinite;
         }
+        .main-loader {
+            width: 28px;
+            height: 28px;
+            border: 2px solid #ee8128;
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
         .loader::after,
         .loader::before {
             content: '';  
@@ -162,6 +172,7 @@
         @media screen and (max-width: 620px) {
             .container {
                 width: 100%;
+                margin: 50px auto;
             }
 
             .heading {
@@ -227,8 +238,9 @@
             template: `
                 <div class="card-header" @click="getBand(band.band)">
                     <h4>{{ band.band }}</h4>
+                    <span class="main-loader" v-if="mainLoading"></span>
                 </div>
-                <div class="card-body" :class="{ hide: this.id == '' }">
+                <div class="card-body" :class="{ hide: this.id == ''}">                    
                     <p><strong>It sounds like: </strong><em>{{this.tags}}</em></p>
                     <p v-if="show.date !== undefined">
                         <strong>Last show was at </strong> <em>{{show.venueName}}, {{show.city}}, {{show.country}} ({{show.date}}).</em>
@@ -250,6 +262,7 @@
                     id: '',
                     tags: '',
                     loading: false,
+                    mainLoading: false,
                     show: {
                         date: undefined,
                         venueName : undefined,
@@ -261,20 +274,23 @@
             },
             methods:{
                 async getBand(item) {
-                    try {
+                    try {                        
+                        this.mainLoading = true
                         if(this.id !=''){
                             this.id = ''
-                            this.tags = ''
+                            this.tags = ''                            
                         }else {
-                            const response = await axios.get(`http://musicbrainz.org/ws/2/artist/?query=${item}&fmt=json&limit=1`)
+                            const response = await axios.get(`https://musicbrainz.org/ws/2/artist/?query=${item}&fmt=json&limit=1`)
                             this.id = response.data.artists[0].id                            
                             let bandTags = response.data.artists[0].tags !== undefined ? response.data.artists[0].tags : []
-                            this.tags = this.tagsToSlashedString(bandTags)                            
+                            this.tags = this.tagsToSlashedString(bandTags)
                         }
                         
                     } catch (error) {
                         console.error(error);
                         this.id = '';
+                    } finally {
+                        this.mainLoading = false
                     }
                 },
                 async getLastSetList(){
