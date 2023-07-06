@@ -6,7 +6,7 @@
     <title>Setlists expected to be played at Corona Festival 2023</title>
     <meta name="keywords" content="Corona Capital, Music Festival, 2023, Music">
     <meta name="author" content="Ruedakax">
-    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <style>
         * {
             padding: 0;
@@ -266,7 +266,7 @@
                             this.id = ''
                             this.tags = ''
                         }else {
-                            const response = await axios.get(`http://musicbrainz.org/ws/2/artist/?query=${item}&fmt=json&limit=1`)
+                            const response = await axios.get(`https://musicbrainz.org/ws/2/artist/?query=${item}&fmt=json&limit=1`)
                             this.id = response.data.artists[0].id                            
                             let bandTags = response.data.artists[0].tags !== undefined ? response.data.artists[0].tags : []
                             this.tags = this.tagsToSlashedString(bandTags)                            
