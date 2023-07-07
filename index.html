@@ -14,6 +14,11 @@
             box-sizing: border-box;
         }
 
+        .linked {
+            cursor: pointer;
+            text-decoration: underline;            
+        }
+
         body {
             background: #312c28;
             font-family: 'Roboto',sans-serif;
@@ -36,14 +41,7 @@
             justify-content: space-around;
             flex-flow: column;
             flex-basis: 100%;            
-        }
-
-        /*.box {
-            display: flex;
-            justify-content: space-around;
-            flex-flow: row;
-            flex-basis: 100%;            
-        }*/
+        }        
 
         .day-header {
             text-align: center;
@@ -149,7 +147,7 @@
         }
 
         ul li:not(:last-child) {
-            margin-bottom: 2px;
+            margin-bottom: 5px;
         }
         
         @keyframes rotation {
@@ -248,7 +246,11 @@
                     <div>
                         <p>Songs:</p>
                         <ul v-if="show.songs.length > 0">
-                            <li v-for="song in show.songs">{{song.name}}</li>
+                            <li v-for="song in show.songs">
+                                    <span class="linked" @click="openRequest(song.url)">
+                                        {{song.name}}
+                                    </span>
+                            </li>
                         </ul>
                         <span class="loader" v-if="loading"></span>
                         <span v-if="show.songs.length <= 0 && !loading">Not set lists found</span>
@@ -293,7 +295,7 @@
                         this.mainLoading = false
                     }
                 },
-                async getLastSetList(){
+                async getLastSetList(){                    
                     if (this.id !== '') {
                         try {
                             this.loading = true
@@ -330,8 +332,14 @@
                         this.show.venueName = requestedShow.venue.name
                         this.show.city = requestedShow.venue.city.name
                         this.show.country = requestedShow.venue.city.country.name
-                        this.show.songs = requestedShow.sets.set[0].song
+                        this.show.songs = requestedShow.sets.set[0].song.map(obj => ({
+                             ...obj,
+                             url : `https://www.youtube.com/results?search_query=${encodeURIComponent(this.band.band)}+${encodeURIComponent(obj.name)}`
+                            }))
                     }
+                },
+                async openRequest(url){                    
+                    window.open(url, "_blank");
                 }
             },
             watch:{
