@@ -289,7 +289,7 @@ li {
     animation: gradient-animation 18s ease infinite;
     margin: 0.1rem 0rem 0.1rem 0rem;
     color: #83e757;
-    height: 4rem;
+    padding: 0.5rem 0rem 0.5rem 0rem;
     font-size: 2rem;
     font-family: "Major Mono Display", monospace;
     font-weight: 400;
