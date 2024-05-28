@@ -4,319 +4,311 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Setlists expected to be played at Corona Festival 2023</title>
-    <meta name="keywords" content="Corona Capital, Music Festival, 2023, Music">
-    <meta name="author" content="Ruedakax">
-    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-    <style>
-        * {
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-        }
-
-        .linked {
-            cursor: pointer;
-            text-decoration: underline;      
-            text-decoration-color: #ee8128;      
-        }
-
-        body {
-            background: #312c28;
-            font-family: 'Roboto',sans-serif;
-        }
-
-        .container {
-            width: 90%;
-            margin: 50px auto;
-        }
-
-        .heading {
-            text-align: center;
-            font-size: 30px;
-            margin-bottom: 50px;
-            color: #ee8128;
-        }
-
-        .column {
-            display: flex;
-            justify-content: space-around;
-            flex-flow: column;
-            flex-basis: 100%;            
-        }        
-
-        .day-header {
-            text-align: center;
-            padding: 10px 10px;
-            background: linear-gradient(to right, #fca31f, #ee8128);
-            color: #7c0b4d;
-            margin-bottom: 1px;            
-        }
-
-        .card {
-            width: 100%;
-            background: #ee8128;
-            border: 1px solid #ee8128;
-            /*margin-bottom: 50px;*/
-        }
-
-        .card-header {            
-            text-align: center;
-            padding: 10px 10px;
-            background: linear-gradient(to right, #8cee4b, #a4c434);
-            color: #236110;
-            cursor: pointer;
-            margin-bottom: 1px;
-            transition: 0.1s;
-        }
-
-        .card-body {
-            padding: 30px 20px;
-            text-align: center;
-            background: linear-gradient(to right, #141414, #4e4948);
-            color: #ebf7e8;
-            width: 100%;
-        }
-        .card-body p {            
-            font-size: 14px;
-            padding: 5px;
-        }
-        
-        .card-header:hover {
-            transform: scale(1.005);
-            background: linear-gradient(to right, #ac2dac, #be2352);
-            box-shadow: 0px 5px 5px #1a062c;
-            color:#f7cfdb
-        }
-
-        .hide {
-            display:none;
-        }
-
-        /*loading device*/
-        .loader {
-            width: 28px;
-            height: 28px;
-            border: 2px solid #ac2dac;
-            border-radius: 50%;
-            display: inline-block;
-            position: relative;
-            box-sizing: border-box;
-            animation: rotation 1s linear infinite;
-        }
-        .main-loader {
-            width: 28px;
-            height: 28px;
-            border: 2px solid #ee8128;
-            border-radius: 50%;
-            display: inline-block;
-            position: relative;
-            box-sizing: border-box;
-            animation: rotation 1s linear infinite;
-        }
-        .loader::after,
-        .loader::before {
-            content: '';  
-            box-sizing: border-box;
-            position: absolute;
-            left: 0;
-            top: 0;
-            background: #ac2dac;
-            width: 3px;
-            height: 3px;
-            transform: translate(150%, 150%);
-            border-radius: 50%;
-        }
-        .loader::before {
-            left: auto;
-            top: auto;
-            right: 0;
-            bottom: 0;
-            transform: translate(-150%, -150%);
-        }
-
-        /*list*/
-        ul {            
-            display: flex;
-            flex-direction: column;
-            flex-wrap: wrap;
-            list-style-type: none;
-        }
-
-        ul li {
-            font-size: 12px;
-            font-style: italic;
-        }
-
-        ul li:not(:last-child) {
-            margin-bottom: 5px;
-        }
-        
-        @keyframes rotation {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        } 
-
-        /* Responsive media queries */
-
-        @media screen and (max-width: 1000px) {
-            .card {
-                width: 80%;
-            }
-        }
-
-        @media screen and (max-width: 620px) {
-            .container {
-                width: 100%;
-                margin: 50px auto;
-            }
-
-            .heading {
-                padding: 20px;
-                font-size: 30px;
-            }
-
-            .card {
-                width: 80%;
-            }
-        }
-    </style>
+    <meta name="keywords" content="Corona Capital, Music Festival, 2023, Music"/>
+    <meta name="author" content="Ruedakax"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&display=swap" rel="stylesheet"/>
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'/>
+    <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
+    <header class="site-header">
+        <div>Quick check last show setlist</div>
+    </header>
     <div class="container">
-        <div class="heading">
-          <h2>Setlists expected to be played at Corona Festival 2023</h2>
-        </div>    
         <div id="app" v-cloak>
-            <band-list/>
         </div>
     </div>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="./js/info.js"></script>
     <script>
         let app = Vue.createApp({
+            template: `
+                <band-search @set-results="setSearchResult" :initialize="initialize"/>
+                <band-list :bands="searchResult" :loading="loadingList" @set-id="setSelectionId"/>
+                <setlist-items :id="selectedId" :tags="getTags()" @back="initialState"/> 
+            `,
             data: function() {
                 return {
-
+                    searchResult: [],
+                    loadingList: false,
+                    selectedId: '',
+                    initialize:false,
                 }
             },
+            components:['band-search, band-list', 'setlist-items'],
             methods: {
-
-            },
+                setSearchResult(result){
+                    this.selectedId = ''
+                    this.searchResult = result
+                },
+                setSelectionId(id){
+                    this.selectedId = id
+                },
+                getTags(){
+                    let res = {
+                        name:'',
+                        tags:[]
+                    }
+                    if(this.selectedId){
+                        let selectedObject = this.searchResult.find(item => item.id === this.selectedId)
+                        if(selectedObject){
+                            res.tags = selectedObject.tags
+                            res.name = selectedObject.name
+                        }
+                    }
+                    return res
+                },
+                initialState(flag){
+                    this.selectedId = ''
+                    this.searchResult = []
+                    this.loadingList = false
+                    this.initialize = flag
+                }
+            }
         })
-        app.component('band-list', {
+        
+        //END OF MAIN APP
+        
+        app.component('band-search', {
             template: `
-            <div class="column">
-                <div class="box" v-for="(day, index) in bands">
-                    <div class="card">                    
-                        <div class="day-header">{{index}}</div>
-                    </div>                    
-                    <div class="card">                    
-                            <div class="box2" v-for="band in day">
-                                <band-item :band="{band}"></band-item>
-                            </div>
-                    </div>
+                <div class="box">
+                    <input
+                        class="search"
+                        spellcheck="false"
+                        placeholder="Artist or Band name..."
+                        @keyup.enter="onEnter"
+                        v-model="searchTerm"
+                        @change="cleanResults"
+                    >
                 </div>
-            </div>
+                <div class="box" v-show="loading"><div class="loader"></div></div>
+                <div :class="[noFound ? 'visible' : 'hidden', 'alert']">
+                    <span> No results for your search! </span>
+                </div>
             `,
-            components:['band-item'],
             data() {
                 return {
-                    bands: days,
+                    searchTerm: '',
+                    results: [],
+                    noFound: false,
+                    loading: false,
                 }
             },
             methods:{
+                onEnter() {
+                    if (this.searchTerm) {
+                        this.$emit('set-results', [])
+                        this.loading = true
+                        setTimeout(() => {
+                            this.getBands(this.searchTerm)
+                        }, 2000);
+                    }
+                },
+                async getBands(item) {
+                    try {
+                        this.results = await axios.
+                            get (`https://soundsxpected.000webhostapp.com/getband.php?query=${item}`).
+                            then (function(response) {
+                                return response.data.artists
+                            })
+                        if (this.results === undefined)
+                            throw new Error('NO RECORDS FOUND!');
+                        let formattedItems = this.formatBandsInfo(this.results)
+                        this.$emit('set-results', formattedItems)
+                        this.loading = false
+                        
+                    } catch (error) {
+                        this.noFound = true
+                        this.loading = false
+                        this.$emit('set-results', [])
+                        setTimeout(() => {
+                            this.noFound = false
+                        }, 2000);
+                        console.error(error)
+                    }
+                },
+                formatBandsInfo(bands){
+                    let formattedBands = []
+                    bands.forEach(band => {
+                        let name = band.hasOwnProperty('name') ? band.name : null
+                        let disambiguation = band.hasOwnProperty('disambiguation') ? band.disambiguation : ''
+                        let area = band.hasOwnProperty('area') ? band.area : {}
+                        let country = area.hasOwnProperty('name') ? area.name : null
+                        let beginArea = band.hasOwnProperty('begin-area') ? band['begin-area'] : {}
+                        let city = beginArea.hasOwnProperty('name') ? beginArea.name : ''
+                        let id = band.hasOwnProperty('id') ? band.id : null
+                        let finalObject = {
+                            name,
+                            disambiguation,
+                            country,
+                            city,
+                            id,
+                            tags: band.hasOwnProperty('tags') ? band.tags : [],
+                        }
+                        if (!Object.values(finalObject).some(element => element == null)) {
+                            formattedBands.push(finalObject)
+                        }
+                    });
 
-            }
+                    return formattedBands
+                },
+                cleanResults(){
+                    this.results = []
+                }        
+            },
+            watch: {
+                initialize(){
+                    this.searchTerm = ''
+                },
+            },
+            emits:['set-results','set-loading-list'],
+            props: ['initialize'],
         })
-        app.component('band-item',{
+        
+        //END SEARCH COMPONENT
+        
+        app.component('band-list', {
+            data() {
+                return {
+                    selectedId: null,
+                }
+            },
+            props: ['bands','loading'],
             template: `
-                <div class="card-header" @click="getBand(band.band)">
-                    <h4>{{ band.band }}</h4>
-                    <span class="main-loader" v-if="mainLoading"></span>
-                </div>
-                <div class="card-body" :class="{ hide: this.id == ''}">                    
-                    <p><strong>It sounds like: </strong><em>{{this.tags}}</em></p>
-                    <p v-if="show.date !== undefined">
-                        <strong>Last show was at </strong> <em>{{show.venueName}}, {{show.city}}, {{show.country}} ({{show.date}}).</em>
-                    </p>
-                    <div>
-                        <p>Songs:</p>
-                        <ul v-if="show.songs.length > 0">
-                            <li v-for="song in show.songs">
-                                    <span class="linked" @click="openRequest(song.url)">
-                                        {{song.name}}
-                                    </span>
-                            </li>
-                        </ul>
-                        <span class="loader" v-if="loading"></span>
-                        <span v-if="show.songs.length <= 0 && !loading">Not set lists found</span>
-                    </div>
+                <div class="box" v-show="checkBands">
+                    <section class='results-watchlist-container'>
+                        <h2>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-graph" width="24" height="24"
+                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M4 18v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
+                                <path d="M7 14l3 -3l2 2l3 -3l2 2" />
+                            </svg>
+                            Results
+                        </h2>
+                        <div id="results">
+                            <article class="result-row" v-for="band in bands" v-show="isSelected(band.id)">
+                                <div class="result-name">
+                                    <h3>{{band.name}}</h3>
+                                    <p>{{band.disambiguation}}</p>
+                                </div>
+                                <div class="result-info">
+                                    <p class="country">{{band.country}}</p>
+                                    <p class="city">{{band.city}}</p>
+                                </div>
+                                <button class="result-button" role="button" @click="selectBand(band.id)">GO!</button>
+                            </article>
+                        </div>
+                    </section>
                 </div>
             `,
-            components:['set-list'],
-            props:['band'],
+            components:[],
+            data() {
+                return {
+                    selectedId: ''
+                }
+            },
+            methods:{
+                selectBand(id) {
+                    this.selectedId = id
+                    this.$emit('set-id', id)
+                },
+                isSelected(id) {
+                    if (!this.selectedId) {
+                        return true
+                    } else {
+                        return this.selectedId === id
+                    } 
+                },
+            },
+            watch: {
+                bands: {
+                    handler: function(newVal, oldVal) {
+                        this.selectedId = ''
+                    },
+                },
+            },
+            computed: {
+                checkBands() {
+                    return this.bands.length > 0 ? true : false
+                },
+            },
+            emits:['set-id'],
+        })
+
+        // end of list component
+
+        app.component('setlist-items',{
+            template: `
+                <div class="box" v-show="id !== ''">
+                    <span v-if="loading" class="loader"></span>
+                    <section v-else class='results-watchlist-container'>
+                        <div class="back-container">
+                            <button class="result-button back" role="button" @click="initialize">BACK</button>
+                        </div>
+                        <div class="tags">
+                            <p class="tags-title">Sounds like :</p>
+                            <p class="tags-body">{{tagsToSlashedString()}}</p>
+                        </div>
+                        <div class="header">
+                            <img src="assets/list.svg" alt="list icon" class="list-icon">  
+                            <h5>Lastest Setlist</h5>
+                            <div class="venue">{{show.venueName}}, {{show.city}}, {{show.country}}.</div>
+                            <div class="date">{{show.date}}</div>
+                        </div>
+                        <div class="list">
+                            <ul v-if="show.songs.length > 0">
+                                <li v-for="song in show.songs" class="song">
+                                    <span class="linked" v-show="song.name!=''" @click="openRequest(song.url)">
+                                    {{song.name}}
+                                </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+                <div :class="[noFound ? 'visible' : 'hidden', 'alert']">
+                    <span> Setlists not available! </span>
+                </div>
+            `,
+            props:['id','tags'],
             data: function() {
                 return {
-                    id: '',
-                    tags: '',
-                    loading: false,
-                    mainLoading: false,
                     show: {
                         date: undefined,
                         venueName : undefined,
                         city: undefined,
                         country: undefined,
-                        songs: [],
-                    }
+                        songs: []
+                    },
+                    loading: false,
+                    noFound: false,
                 }
             },
             methods:{
-                async getBand(item) {
-                    try {                        
-                        this.mainLoading = true
-                        if(this.id !=''){
-                            this.id = ''
-                            this.tags = ''                            
-                        }else {
-                            const response = await axios.get(`https://musicbrainz.org/ws/2/artist/?query=${item}&fmt=json&limit=1`)
-                            this.id = response.data.artists[0].id                            
-                            let bandTags = response.data.artists[0].tags !== undefined ? response.data.artists[0].tags : []
-                            this.tags = this.tagsToSlashedString(bandTags)
+                async getLastSetList(){
+                    try {
+                        const response = await axios.get(`https://soundsxpected.000webhostapp.com/getset.php?mbzid=${this.id}`)
+                        let setLists = response.data.setlist !== undefined ? response.data.setlist : []
+                        if (setLists.length >0) {
+                            this.getFirstValidShow(setLists)
+                        } else {
+                            this.noFound = true
+                            setInterval(() => {
+                                this.noFound = false
+                            }, 2000);
+                            this.initialize()
                         }
-                        
+
                     } catch (error) {
                         console.error(error);
                         this.id = '';
                     } finally {
-                        this.mainLoading = false
+                        this.loading = false
                     }
-                },
-                async getLastSetList(){                    
-                    if (this.id !== '') {
-                        try {
-                            this.loading = true
-                            const response = await axios.get(`https://soundsxpected.000webhostapp.com/getset.php?mbzid=${this.id}`)
-                            let setLists = response.data.setlist !== undefined ? response.data.setlist : []
-                            this.getFirstValidShow(setLists)                            
-                        } catch (error) {
-                            console.error(error);
-                            this.id = '';
-                        } finally {
-                            this.loading = false
-                        }
-                    }
-                },
-                tagsToSlashedString(tagsArray){
-                    let tags = tagsArray.filter(tag => tag.count > 1)
-                            .map(function(item) { return item.name })                         
-                            .join(' / ')
-                    
-                    return tags.length ? tags : 'No idea yet!'                    
                 },
                 getFirstValidShow(shows){
                     let requestedShow = []
@@ -335,19 +327,39 @@
                         this.show.country = requestedShow.venue.city.country.name
                         this.show.songs = requestedShow.sets.set[0].song.map(obj => ({
                              ...obj,
-                             url : `https://www.youtube.com/results?search_query=${encodeURIComponent(this.band.band)}+${encodeURIComponent(obj.name)}`
-                            }))
+                             url : `https://www.youtube.com/results?search_query=${encodeURIComponent(this.tags.name)}+${encodeURIComponent(obj.name)}`
+                        }))
                     }
                 },
-                async openRequest(url){                    
+                tagsToSlashedString(){
+                    this.tags.tags.sort((a,b) => b.count - a.count)
+                    if (this.tags.tags.length > 0) {
+                        let string = this.tags.tags.filter(tag => tag.count > 1)
+                                .map(function(item) { return item.name  })                    
+                                .join(' / ')
+                        
+                        return string                    
+                    } else {
+                        return ''
+                    }
+                },
+                initialize() {
+                    this.$emit('back',true)
+                },
+                async openRequest(url){      
                     window.open(url, "_blank");
                 }
             },
             watch:{
                 id () {
-                    this.getLastSetList()
+                    if (this.id != ''){
+                        this.loading = true
+                        this.getLastSetList()
+                    }
                 }
-            }
+                
+            },
+            emits:['back'],
         })
         app.mount('#app')
     </script>
