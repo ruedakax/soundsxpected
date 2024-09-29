@@ -329,6 +329,12 @@
                              ...obj,
                              url : `https://www.youtube.com/results?search_query=${encodeURIComponent(this.tags.name)}+${encodeURIComponent(obj.name)}`
                         }))
+                    } else {
+                        this.noFound = true
+                        setInterval(() => {
+                            this.noFound = false
+                        }, 2000);
+                        this.initialize()
                     }
                 },
                 tagsToSlashedString(){
