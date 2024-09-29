@@ -109,7 +109,7 @@
                 async getBands(item) {
                     try {
                         this.results = await axios.
-                            get (`https://yellow-wolverine-372005.hostingersite.com/getband.php?query=${item}`).
+                            get (`https://yellow-wolverine-372005.hostingersite.com/getBand.php?query=${item}`).
                             then (function(response) {
                                 return response.data.artists
                             })
@@ -291,7 +291,7 @@
             methods:{
                 async getLastSetList(){
                     try {
-                        const response = await axios.get(`https://yellow-wolverine-372005.hostingersite.com/getset.php?mbzid=${this.id}`)
+                        const response = await axios.get(`https://yellow-wolverine-372005.hostingersite.com/getSet.php?mbzid=${this.id}`)
                         let setLists = response.data.setlist !== undefined ? response.data.setlist : []
                         if (setLists.length >0) {
                             this.getFirstValidShow(setLists)
