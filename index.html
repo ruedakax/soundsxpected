@@ -113,7 +113,7 @@
                             then (function(response) {
                                 return response.data.artists
                             })
-                        if (this.results === undefined)
+                        if (this.results === undefined || this.results.length === 0)
                             throw new Error('NO RECORDS FOUND!');
                         let formattedItems = this.formatBandsInfo(this.results)
                         this.$emit('set-results', formattedItems)
@@ -266,6 +266,11 @@
                                     {{song.name}}
                                 </span>
                                 </li>
+                                 <li v-for="song in show.encore" class="song">
+                                    <span class="linked" v-show="song.name!=''" @click="openRequest(song.url)">
+                                    {{song.name}}
+                                </span>
+                                </li>
                             </ul>
                         </div>
                     </section>
@@ -282,7 +287,8 @@
                         venueName : undefined,
                         city: undefined,
                         country: undefined,
-                        songs: []
+                        songs: [],
+                        encore: [],
                     },
                     loading: false,
                     noFound: false,
@@ -293,7 +299,7 @@
                     try {
                         const response = await axios.get(`https://yellow-wolverine-372005.hostingersite.com/getSet.php?mbzid=${this.id}`)
                         let setLists = response.data.setlist !== undefined ? response.data.setlist : []
-                        if (setLists.length >0) {
+                        if (setLists.length > 0) {
                             this.getFirstValidShow(setLists)
                         } else {
                             this.noFound = true
@@ -329,6 +335,13 @@
                              ...obj,
                              url : `https://www.youtube.com/results?search_query=${encodeURIComponent(this.tags.name)}+${encodeURIComponent(obj.name)}`
                         }))
+                        //check for encore
+                        if (requestedShow.sets.set[1] !== undefined && requestedShow.sets.set[1].encore) {
+                            this.show.encore = requestedShow.sets.set[1].song.map(obj => ({
+                                ...obj,
+                                 url : `https://www.youtube.com/results?search_query=${encodeURIComponent(this.tags.name)}+${encodeURIComponent(obj.name)}`
+                            }))
+                        }
                     } else {
                         this.noFound = true
                         setInterval(() => {
